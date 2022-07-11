@@ -1,0 +1,90 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  8
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      controlDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+application     interFoam;
+
+startFrom       latestTime;
+
+startTime       0;
+
+stopAt          endTime;
+
+endTime         100;
+
+deltaT          0.005;
+
+writeControl    adjustableRunTime;
+
+writeInterval   0.25;
+
+purgeWrite      0;
+
+writeFormat     binary;
+
+writePrecision  12;
+
+writeCompression off;
+
+timeFormat      general;
+
+timePrecision   7;
+
+runTimeModifiable yes;
+
+adjustTimeStep  off;
+
+maxCo           0.9;
+maxAlphaCo      0.9;
+
+maxDeltaT       1;
+
+libs            ("libvariableHeightFlowRateInletUniformVelocity.so");
+
+functions
+{
+    waterOutlet
+    {
+        type            surfaceFieldValue;
+        libs            ("libfieldFunctionObjects.so");
+        writeControl    timeStep;
+        writeInterval   1;
+        writeFields     false;
+        log             false;
+        regionType      patch;
+        name            outlet;
+        operation       sum;
+        fields
+        (
+            alphaPhi0.water
+        );
+    }
+    interfaceHeight1
+    {
+        type           interfaceHeight;
+        libs           ("libfieldFunctionObjects.so");
+        alpha          alpha.water;
+        locations      (
+            (-10.001 0.001 -5.001)
+            (-20.001 0.001 -5.001)
+            (-30.001 0.001 -5.001)
+            (-40.001 0.001 -5.001)
+            (-50.001 0.001 -5.001)
+        );
+    }
+}
+
+// ************************************************************************* //
